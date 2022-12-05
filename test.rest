@@ -1,0 +1,54 @@
+GET http://localhost:3500/cocktails
+
+###
+
+POST http://localhost:3500/cocktails
+Content-Type: application/json
+
+{
+    "name": "Whiskey Sour",
+    "alcoholbase": "Whiskey",
+    "description": "5 cl whiskey, 3 cl lemonjuice, 2 cl syrup, 1 egg white. Shake first without ice to get make the egg white foam then shake with ice and dubble strain into a glass on foot"
+}
+
+###
+
+POST http://localhost:3500/cocktails
+Content-Type: application/json
+
+{
+    "name": "Gin fizz",
+    "alcoholbase": "Gin",
+    "description": "5 cl gin, 3 cl lemonjuice, 2 cl syrup, 1 egg white. Shake first without ice to get make the egg white foam then shake with ice and dubble strain into a glass on foot"
+
+}
+
+###
+
+GET http://localhost:3500/cocktails
+Content-Type: application/json
+
+{
+    "id": "638e1a902ae9b180b7a8d1a4"
+}
+
+###
+
+PATCH http://localhost:3500/cocktails
+Content-Type: application/json
+
+{
+    "id": "638e1a902ae9b180b7a8d1a4",
+    "name": "Whiskey sour",
+    "alcoholbase": "Whiskey",
+    "description": "Changed"
+}
+
+###
+
+DELETE http://localhost:3500/cocktails
+Content-Type: application/json
+
+{
+    "id": "638e1a872ae9b180b7a8d1a1"
+}
