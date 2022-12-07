@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Cocktail = require('../models/Cocktail')
 const asyncHandler = require('express-async-handler')
+const { upload, removeCocktailImage } = require('../config/multerOptions')
 
 /**
  * @desc Get all cocktails
@@ -20,15 +21,18 @@ const getAllCocktails = asyncHandler(async (req, res) => {
  * @route POST /cocktails
  */
 const createNewCocktail = asyncHandler(async (req, res) => {
+    const fileName = req.file != null ? req.file.filename : null
     const { name, alcoholbase, description } = req.body
-    if (!name || !alcoholbase || !description) {
+    if (!name || !alcoholbase || !description || !fileName) {
+        removeCocktailImage(fileName)
         return res.status(400).json({ message: 'All fields are required' })
     }
-    const cocktailObject = { name, alcoholbase, description }
+    const cocktailObject = { name, alcoholbase, description, imageName: fileName }
     const cocktail = await Cocktail.create(cocktailObject)
     if (cocktail) {
         res.status(201).json({ message: `New cocktail ${cocktail.name} created`})
     } else {
+        removeCocktailImage(fileName)
         res.status(500).json({ message: 'Failed to save cocktail'})
     }
 })
@@ -38,17 +42,22 @@ const createNewCocktail = asyncHandler(async (req, res) => {
  * @route PATCH /cocktails
  */
 const updateCocktail = asyncHandler(async (req, res) => {
+    const fileName = req.file != null ? req.file.filename : null
     const { id, name, alcoholbase, description } = req.body
-    if (!id || !name || !alcoholbase || !description) {
+    if (!id || !name || !alcoholbase || !description || !fileName) {
+        removeCocktailImage(fileName)
         return res.status(400).json({ message: 'All fields are required' })
     }
     const cocktail = await Cocktail.findById(id).exec()
     if (!cocktail) {
+        removeCocktailImage(fileName)
         return res.status(400).json({ message: 'No cocktail found' })
     }
+    removeCocktailImage(cocktail.imageName)
     cocktail.name = name
     cocktail.alcoholbase = alcoholbase
     cocktail.description = description
+    cocktail.imageName = fileName
     const updatedCocktail = await cocktail.save()
     res.status(200).json({ message: `${updatedCocktail.name} updated` })
 })
@@ -64,14 +73,15 @@ const deleteCocktail = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'No cocktail found' })
     }
     const result = await cocktail.deleteOne()
+    removeCocktailImage(result.imageName)
     const reply = `Cocktail ${result.name} deleted`
     res.json(reply)
 })
 
 router.route('/')
     .get(getAllCocktails)
-    .post(createNewCocktail)
-    .patch(updateCocktail)
+    .post(upload.single('cocktailImage'), createNewCocktail)
+    .patch(upload.single('cocktailImage'), updateCocktail)
     .delete(deleteCocktail)
 
 module.exports = router
