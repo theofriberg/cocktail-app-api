@@ -22,6 +22,7 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 app.use('/', express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public', 'uploads', 'cocktailImages')))
 
 app.use('/', indexRouter)
 

@@ -6,8 +6,17 @@ const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
 const Cocktail = require('../models/Cocktail')
 const uploadPath = path.join('public', Cocktail.cocktailImageBasePath)
 
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, uploadPath)
+    },
+    filename: (req, file, callback) => {
+        callback(null, new Date().toISOString() + file.originalname)
+    }
+})
+
 const upload = multer({
-    dest: uploadPath,
+    storage: storage,
     fileFilter: (req, file, callback) => {
         callback(null, imageMimeTypes.includes(file.mimetype))
     }

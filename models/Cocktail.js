@@ -25,11 +25,5 @@ const cocktailSchema = mongoose.Schema({
     timestamps: true
 })
 
-cocktailSchema.virtual('cocktailImagePath').get(function() {
-    if (this.imageName != null) {
-        return path.join(cocktailImageBasePath, this.imageName)
-    }
-})
-
 module.exports = mongoose.model('Cocktail', cocktailSchema)
 module.exports.cocktailImageBasePath = cocktailImageBasePath
