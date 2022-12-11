@@ -27,7 +27,6 @@ const removeCocktailImage = (fileName) => {
         if (err) {
             console.log(err)
         }
-        console.log(`${fileName} was deleted`)
     })
 }
 
