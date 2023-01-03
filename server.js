@@ -8,25 +8,30 @@ const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConnect')
 const mongoose = require('mongoose')
-const PORT = process.env.PORT || 3500
 
-const indexRouter = require('./routes/index')
-const cocktailRouter = require('./routes/cocktailRouter')
+const PORT = process.env.PORT || 3500
 
 connectDB()
 
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
 
 app.use(cookieParser())
 
 app.use(cors(corsOptions))
 
 app.use('/', express.static(path.join(__dirname, 'public')))
-app.use(express.static(path.join(__dirname, 'public', 'uploads', 'cocktailImages')))
+
+const indexRouter = require('./routes/index')
+const cocktailRouter = require('./routes/cocktailRouter')
+const userRouter = require('./routes/userRouter')
+const authRouter = require('./routes/authRouter')
+const commentRouter = require('./routes/commentRouter')
 
 app.use('/', indexRouter)
-
 app.use('/cocktails', cocktailRouter)
+app.use('/users', userRouter)
+app.use('/auth', authRouter)
+app.use('/comments', commentRouter)
 
 app.all('*', (req, res) => {
     res.status(404)
